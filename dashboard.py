@@ -60,6 +60,14 @@ app.layout = html.Div(
                                 ),
                             ],                    
                         ),
+                        html.Div(
+                            children=[
+                                dcc.Graph(
+                                    id='index',
+                                    figure=index_fig
+                                ),
+                            ],
+                        ),
                     ]
                 ),
             ]
