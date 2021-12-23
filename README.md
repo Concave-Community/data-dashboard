@@ -5,6 +5,7 @@ Data pre-processing and visualization
 - Python 3.8
 - Pandas
 - Plotly
+- Dash
 
 ## run locally
 - python3 app.py
