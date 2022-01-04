@@ -5,10 +5,6 @@ import dash_bootstrap_components as dbc
 
 from dash import dcc, html
 
-from .bond_metrics import BondMetrics
-from .token_metrics import TokenMetrics
-from .treasury_metrics import TreasuryMetrics
-
 
 class Protocol(object):
     def __init__(self):
