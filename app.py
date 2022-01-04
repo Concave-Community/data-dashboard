@@ -1,16 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc
-import pandas as pd
-
 
 from dash import Input, Output, dcc, html
-
-from protocols.time import Time
-from utils.util import select_columns
+from src.protocols.time import Time
 
 # load and pre-process protocol data
 wonderland = Time()
-wonderland.preprocess()
 
 # build Dash layout
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])

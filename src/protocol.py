@@ -1,92 +1,44 @@
-import pandas as pd
 import math
+import pandas as pd
 import plotly.express as px
+import dash_bootstrap_components as dbc
 
 from dash import dcc, html
-import dash_bootstrap_components as dbc
+
+from .bond_metrics import BondMetrics
+from .token_metrics import TokenMetrics
+from .treasury_metrics import TreasuryMetrics
 
 
 class Protocol(object):
     def __init__(self):
-        self.df = pd.read_csv(self.csv_url)
-        self.df = self.df.drop(self.df.columns[0], axis=1)[1:]
-        self.df["timestamp"] = pd.to_datetime(self.df["timestamp"], unit="s")
-
-    def preprocess(self):
-        self.supply_growth_df = self.select_columns(self.df, ["timestamp", "supply"])
-        self.supply_growth_df["supply"] = self.supply_growth_df["supply"].apply(
-            lambda x: ((float(x) - 30000) / 30000) * 100
-        )
-        self.supply_growth_df.columns = ["timestamp", "growth-rate"]
-
-        self.dilution_df = self.select_columns(
-            self.supply_growth_df, ["timestamp", "growth-rate"]
-        )
-        self.dilution_df["growth-rate"] = (
-            self.dilution_df["growth-rate"] / self.df["index"]
-        )
-        self.dilution_df.columns = ["timestamp", "dilution"]
-
-        self.market_cap_df = self.select_columns(
-            self.df, ["timestamp", "supply", "market_price"]
-        )
-        self.market_cap_df["market_cap"] = self.market_cap_df.apply(
-            lambda row: row.market_price * row.supply, axis=1
-        )
-        self.market_cap_df = self.select_columns(
-            self.market_cap_df, ["timestamp", "market_cap"]
-        )
-
-        self.percent_staked_df = self.select_columns(
-            self.df, ["timestamp", "supply", "staked"]
-        )
-        self.percent_staked_df["percent_staked"] = self.percent_staked_df.apply(
-            lambda row: row.staked / row.supply, axis=1
-        )
-        self.percent_staked_df = self.select_columns(
-            self.percent_staked_df, ["timestamp", "percent_staked"]
-        )
-
-        self.last_df = self.df.sort_values("timestamp").tail(1)
-        self.index = float(self.last_df["index"])
-        self.price = float(self.last_df["market_price"])
-        self.supply = float(self.last_df["supply"])
-
-        self.reward = float(self.last_df["distribute"])
-        self.rebase = self.reward / float(self.last_df["staked"])
-        self.five_day_roi =  (math.pow(1 + self.rebase, 5 * 3) - 1) * 100
-        self.apy = (math.pow(1 + self.rebase, 365 * 3) - 1) * 100
-
-    @staticmethod
-    def select_columns(data_frame, column_names):
-        new_frame = data_frame.loc[:, column_names]
-        return new_frame
+        pass
 
     def charts(self):
-        index_fig = px.line(self.df, x="timestamp", y="index", title="Index")
+        index_fig = px.line(self.token_metrics.tokens_df, x="timestamp", y="index", title="Index")
 
         market_cap_fig = px.line(
-            self.market_cap_df,
+            self.token_metrics.market_cap_df,
             x="timestamp",
             y="market_cap",
             title="Market Cap",
         )
 
         percent_staked_fig = px.line(
-            self.percent_staked_df,
+            self.token_metrics.percent_staked_df,
             x="timestamp",
             y="percent_staked",
             title="Percentage Staked",
         )
 
         supply_growth_fig = px.line(
-            self.supply_growth_df,
+            self.token_metrics.supply_growth_df,
             x="timestamp",
             y="growth-rate",
             title="Supply Growth",
         )
         dilution_fig = px.line(
-            self.dilution_df, x="timestamp", y="dilution", title="% Dilution"
+            self.token_metrics.dilution_df, x="timestamp", y="dilution", title="% Dilution"
         )
         output = html.Div(
             children=[
@@ -111,18 +63,18 @@ class Protocol(object):
                                         dbc.Col(
                                             self.get_card(
                                                 "Market Cap",
-                                                self.supply * self.price
+                                                self.token_metrics.supply * self.token_metrics.price
                                             )
                                         ),
                                         dbc.Col(
-                                            self.get_card("Price", self.price)
+                                            self.get_card("Price", self.token_metrics.price)
                                         ),
                                         dbc.Col(
-                                            self.get_card("Index", self.index)
+                                            self.get_card("Index", self.token_metrics.index)
                                         ),
                                         dbc.Col(
                                             self.get_card(
-                                                "Circulating Supply", self.supply
+                                                "Circulating Supply", self.token_metrics.supply
                                             )
                                         ),
                                     ]
@@ -168,13 +120,13 @@ class Protocol(object):
                                 dbc.Row(
                                     children=[
                                         dbc.Col(
-                                            self.get_card("Rebase", self.rebase)
+                                            self.get_card("Rebase", self.token_metrics.rebase)
                                         ),
                                         dbc.Col(
-                                            self.get_card("Rebase ROI (5-day)", self.five_day_roi)
+                                            self.get_card("Rebase ROI (5-day)", self.token_metrics.five_day_roi)
                                         ),
                                         dbc.Col(
-                                            self.get_card("APY", self.apy)
+                                            self.get_card("APY", self.token_metrics.apy)
                                         ),
                                     ]
                                 ),
