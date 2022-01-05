@@ -1,5 +1,5 @@
 # data-dashboard
-Data pre-processing and visualization
+Data processing and visualization
 
 ## environment
 - Python 3.8
