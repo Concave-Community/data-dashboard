@@ -37,7 +37,6 @@ sidebar = html.Div(
                 src="assets/concave-logo.jpeg",
                 style={"float": "right", "height": "50px"},
             ),
-            href="https://concavers.xyz",
         ),
         html.P("Concave Community", className="lead"),
         dbc.Nav(
