@@ -19,7 +19,7 @@ SIDEBAR_STYLE = {
     "bottom": 0,
     "width": "16rem",
     "padding": "2rem 1rem",
-    "background-color": "#f8f9fa",
+    "background-color": "#edeff0",
 }
 
 # the styles for the main content position it to the right of the sidebar and
@@ -34,16 +34,16 @@ sidebar = html.Div(
     [
         html.A(
             html.Img(
-                src="assets/concave-logo.jpeg",
+                #src="/assets/concave-logo.jpeg",
                 style={"float": "right", "height": "50px"},
             ),
         ),
-        html.P("Concave Community", className="lead"),
+        html.P("Concave Policy", className="lead"),
         dbc.Nav(
             [
-                dbc.NavLink("Home", href="/", active="exact"),
-                dbc.NavLink("$TIME", href="/time", active="exact"),
-                dbc.NavLink("WIP", href="/page-2", active="exact"),
+                dbc.NavLink("Concave", href="/", active="exact"),
+                dbc.NavLink("Wonderland", href="/time", active="exact"),
+                #dbc.NavLink("WIP", href="/page-2", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -56,7 +56,6 @@ content = html.Div(id="page-content", style=CONTENT_STYLE)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
-
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname == "/":
@@ -64,7 +63,7 @@ def render_page_content(pathname):
             [
                 html.H2(
                     children=[
-                        "Dashboards",
+                        "Concave Dashboard",
                     ],
                     style={"text-align": "center"},
                 ),
